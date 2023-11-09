@@ -56,8 +56,8 @@
 						<!-- svelte-ignore a11y-missing-attribute -->
 						<li>
 							<a on:click={handleToolChange}>
-                                {tool.name.charAt(0).toUpperCase() + tool.name.slice(1)}
-                            </a>
+								{tool.name.charAt(0).toUpperCase() + tool.name.slice(1)}
+							</a>
 						</li>
 					{/each}
 				</ul>
