@@ -6,7 +6,7 @@
 
 </script>
 
-<div class="flex self-center w-1/3 h-16 m-2 justify-center">
+<div class="flex self-center w-1/3 h-16 mt-4 items-center justify-center">
     {#if $alertMessage}
         <div class="alert {$alertType} max-w-2xl h-full" out:fade>
             <svg
