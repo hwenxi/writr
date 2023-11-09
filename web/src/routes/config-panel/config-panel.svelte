@@ -45,8 +45,9 @@
 	}
 </script>
 
-<div class="bg-blue-100 rounded-xl p-5">
+<div class="bg-blue-100 rounded-xl p-8 mr-2">
 	<div class="flex flex-col justify-around gap-5">
+		<p class="text-2xl font-bold mx-1">Your Settings</p>
 		<div class="dropdown">
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 			<!-- svelte-ignore a11y-label-has-associated-control -->
@@ -183,18 +184,21 @@
 				name="presencePenalty"
 			/>
 		</label>
+		<hr class="h-px my-4 bg-gray-200 border-0 dark:bg-neutral-500">
 		<form method="POST" action="?/updateToolConfig" use:enhance>
 			<input type="hidden" name="toolSelection" value={$toolSelection} />
 			<input type="hidden" name="config" value={JSON.stringify($currentConfig)} />
 			<input type="hidden" name="systemPrompt" value={$currentSystemPrompt} />
 			<input type="hidden" name="userTemplate" value={JSON.stringify($currentUserTemplate)} />
-			<button
+			<div class='tooltip tooltip-bottom w-full text-xl' data-tip="Changes default settings for revisor">
+				<button
 				name="updateConfigDefaults"
-				class={'btn w-full ' + ($isSettingsChanged ? 'bg-green-100' : '')}
+				class={'btn w-full ' + ($isSettingsChanged ? 'bg-green-100  animate-bounce-small btn-outline btn-neutral ' : '')}
 				on:click={handleConfigAlert}
 			>
-				Update {$toolSelection} Config
+				Update {$toolSelection} Default Settings
 			</button>
+			</div>
 		</form>
 	</div>
 </div>
