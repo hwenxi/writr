@@ -38,7 +38,7 @@
 
 <div class="min-h-screen">
 	<nav class="navbar bg-neutral border-b h-20">
-		<div class="navbar-start pl-5 text-white ">
+		<div class="navbar-start pl-5 text-white w-1/3">
 			<div class="dropdown dropdown-hover">
 				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 				<!-- svelte-ignore a11y-label-has-associated-control -->
@@ -63,16 +63,16 @@
 				</ul>
 			</div>
 		</div>
-		<div class="navbar-center flex-none">
+		<div class="navbar-center flex justify-center w-1/3">
 			<a href="/" class="btn btn-ghost normal-case font-bold text-4xl text-white">Writr</a>
 		</div>
-		<div class="navbar-end pr-5">
+		<div class="navbar-end pr-5 w-1/3">
 			<button class="btn font-bold text-lg" on:click={toggleConfigPanel}>
 				{hideConfigPanel ? 'Show' : 'Hide'} Configuration
 			</button>
 		</div>
 	</nav>
-	<div class="flex flex-col relative min-h-screen">
+	<div class="flex flex-col items-center relative min-h-screen">
 		<div class="absolute top-0 right-0 text-xl my-2 mx-4">{$currentConfig.model}</div>
 		<Alert />
 		<slot />

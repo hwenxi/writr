@@ -2,27 +2,61 @@ import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import type { RequestHandler } from './$types';
 import { getTokens } from '$lib/utils';
+import { json } from '@sveltejs/kit';
+
 dotenv.config();
 
 const openai = new OpenAI({
 	apiKey: process.env.OPENAI_KEY
 });
 
-function craftAPICall(data: { config: any; systemPrompt: string; userInput: string }) {
-	const config = data.config;
+interface Config {
+	model: any;
+	maxTokens: any;
+	topP: any;
+	temperature: any;
+	frequencyPenalty: any;
+	presencePenalty: any;
+}
 
-	let messages = [
+interface InputData {
+	config: Config;
+	systemPrompt: string;
+	userInput: string;
+}
+
+interface Message {
+	role: string;
+	content: string;
+}
+
+interface OpenAIPayload {
+	model: any;
+	messages: Message[];
+	temperature: any;
+	max_tokens: any;
+	top_p: any;
+	frequency_penalty: any;
+	presence_penalty: any;
+	stream: boolean;
+	n: number;
+}
+
+function craftOpenAIPayload({ data }: { data: InputData }): OpenAIPayload {
+	const { config, systemPrompt, userInput } = data;
+
+	let messages: Message[] = [
 		{
 			role: 'system',
-			content: data.systemPrompt
+			content: systemPrompt
 		},
 		{
 			role: 'user',
-			content: data.userInput
+			content: userInput
 		}
 	];
 
-	let body = {
+	let payload: OpenAIPayload = {
 		model: config.model,
 		messages: messages,
 		temperature: config.temperature,
@@ -34,7 +68,7 @@ function craftAPICall(data: { config: any; systemPrompt: string; userInput: stri
 		n: 1 //TODO: increase this to 2-5 to generate multiple options
 	};
 
-	return body;
+	return payload;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -51,26 +85,30 @@ export const POST: RequestHandler = async ({ request }) => {
 		);
 		console.log('Tokens: ' + tokensCount);
 
-		// 128k is the default for gpt-4-1106-preview (turbo), this should flex depending on the selected model
-		if (tokensCount > 128000) {
+		// GPT-4-turbo (Nov. preview) will accept 128k input tokens and max_tokens refers to generation only (max 4096)
+		// For GPT-4 March and June, max_token is shared between input and output -> this limit only allows GPT-4 ~500 tokens response
+		if (tokensCount > 3500) {
 			throw new Error('Query too large');
 		}
 
-		let body = craftAPICall(requestData);
-		const {data: streamRunner, response: streamResponse} = await openai.chat.completions.create(body).withResponse(); // Returns raw from fetch (default cant be passed as SSE)
-	
+		let body: any = craftOpenAIPayload({ data: requestData });
+		const { data: streamRunner, response: streamResponse } = await openai.chat.completions
+			.create(body)
+			.withResponse(); // Returns raw from fetch and streamRunner (see OpenAI Node.js documentation)
+
 		return new Response(streamResponse.body, {
 			headers: {
-				'Content-Type': 'text/event-stream',
+				'Content-Type': 'text/event-stream'
 			}
 		});
 	} catch (err) {
-		console.log('ERROR: ', err);
-		return new Response(
-			JSON.stringify({
-				body: { text: 'Error: there was an error processing your request' },
-				status: 500
-			})
-		);
+		console.log('API Server ERROR: ', err);
+		// return new Response(
+		// 	JSON.stringify({
+		// 		body: { text: 'Error: there was an error processing your request' },
+		// 		status: err
+		// 	})
+		// );
+		return json({ error: err.error.message }, { status: err.status });
 	}
 };

@@ -4,16 +4,17 @@
 	export let data: PageData;
 
 	import { SSE } from 'sse.js';
+	import { ALERT_TYPES, displayAlert, clearAlert } from '$lib/alertStore';
 
 	let scrollToDiv: HTMLDivElement;
 	let loading: boolean = false;
 	let output: string;
 
 	function copyOutput() {
-		var copyText = document.getElementById("output")?.innerHTML;
-
-		navigator.clipboard.writeText(copyText);
-
+		var copyText = document.getElementById('output')?.innerHTML;
+		if (copyText) {
+			navigator.clipboard.writeText(copyText);
+		}
 	}
 
 	function scrollToBottom() {
@@ -22,20 +23,31 @@
 		}, 100);
 	}
 
-	function handleError<T>(err: T) {
+	function handleError(err: any) {
 		loading = false;
-		output = 'An error occured...';
-		console.log('ERROR: ', err);
+		let alertMessage: string;
+		if (typeof err === 'string') {
+			alertMessage=err;
+		}
+		else if (err && err.data) {
+			alertMessage = JSON.parse(err.data).error;
+		}
+		else {
+			alertMessage = "An unknown error occured"
+		}
+		displayAlert(alertMessage, ALERT_TYPES.DANGER);
+		console.error('Generation produced an Error: ', alertMessage, err);
 	}
 
 	async function handleGenerate() {
+		clearAlert();
 		let input = '';
 		output = '';
 
 		for (const key in $currentUserTemplate) {
 			input += $currentUserTemplate[key].trim() + '\n';
-			if (!document.getElementsByName('userInput-' + key)) {
-				return handleError('No input');
+			if (!document.getElementsByName('userInput-' + key)[0].value) {
+				return handleError("You did not input any text");
 			}
 			input += document.getElementsByName('userInput-' + key)[0].value + '\n"""\n';
 		}
@@ -59,7 +71,7 @@
 			scrollToBottom();
 			try {
 				if (e.data === '[DONE]') {
-					loading=false;
+					loading = false;
 					return;
 				}
 				const generatedStream = JSON.parse(e.data);
@@ -67,7 +79,7 @@
 
 				if (delta.content) {
 					//output = (output ?? '') + delta.content;
-					output = (output == '\n' ? '' : output) + delta.content;
+					output = output + delta.content;
 				}
 			} catch (err) {
 				handleError(err);
@@ -103,7 +115,11 @@
 				{output ?? ''}
 			</p>
 			<div class="flex justify-end items-start p-2">
-				<button class={"btn "+ (loading ? "btn-disabled" : "")} type="button" on:click={copyOutput}>
+				<button
+					class={'btn ' + (loading ? 'btn-disabled' : '')}
+					type="button"
+					on:click={copyOutput}
+				>
 					Copy
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
