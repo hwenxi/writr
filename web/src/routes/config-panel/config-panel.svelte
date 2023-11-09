@@ -51,7 +51,7 @@
 		<div class="dropdown">
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 			<!-- svelte-ignore a11y-label-has-associated-control -->
-			<label tabindex="0" class="btn w-full">Change Model: {$currentConfig.model}</label>
+			<label tabindex="0" class="btn w-full m-1">Change Model: {$currentConfig.model}</label>
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 			<ul
 				tabindex="0"

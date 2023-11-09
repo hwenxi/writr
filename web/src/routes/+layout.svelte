@@ -38,11 +38,11 @@
 
 <div class="min-h-screen">
 	<nav class="navbar bg-neutral border-b h-20">
-		<div class="navbar-start pl-5 text-white h-2/3">
-			<div class="dropdown dropdown-hover h-full flex items-center">
+		<div class="navbar-start pl-5 text-white ">
+			<div class="dropdown dropdown-hover">
 				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 				<!-- svelte-ignore a11y-label-has-associated-control -->
-				<label tabindex="0" class="btn btn-sm font-bold text-lg h-full"
+				<label tabindex="0" class="btn m-1 font-bold text-lg"
 					>Select Tool: {$toolSelection}</label
 				>
 				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -66,8 +66,8 @@
 		<div class="navbar-center flex-none">
 			<a href="/" class="btn btn-ghost normal-case font-bold text-4xl text-white">Writr</a>
 		</div>
-		<div class="navbar-end pr-5 h-2/3">
-			<button class="btn btn-sm font-bold text-lg h-full" on:click={toggleConfigPanel}>
+		<div class="navbar-end pr-5">
+			<button class="btn font-bold text-lg" on:click={toggleConfigPanel}>
 				{hideConfigPanel ? 'Show' : 'Hide'} Configuration
 			</button>
 		</div>

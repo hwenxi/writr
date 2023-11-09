@@ -9,6 +9,13 @@
 	let loading: boolean = false;
 	let output: string;
 
+	function copyOutput() {
+		var copyText = document.getElementById("output")?.innerHTML;
+
+		navigator.clipboard.writeText(copyText);
+
+	}
+
 	function scrollToBottom() {
 		setTimeout(function () {
 			scrollToDiv.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
@@ -51,15 +58,16 @@
 		eventSource.addEventListener('message', (e) => {
 			scrollToBottom();
 			try {
-				loading = false;
 				if (e.data === '[DONE]') {
+					loading=false;
 					return;
 				}
 				const generatedStream = JSON.parse(e.data);
 				const [{ delta }] = generatedStream.choices;
 
 				if (delta.content) {
-					output = (output ?? '') + delta.content;
+					//output = (output ?? '') + delta.content;
+					output = (output == '\n' ? '' : output) + delta.content;
 				}
 			} catch (err) {
 				handleError(err);
@@ -70,7 +78,7 @@
 	}
 </script>
 
-<div class="container mx-auto max-w-7xl sm:px-6 lg:px-8 h-fit pb-10 min-h-full">
+<div class="container mx-auto max-w-7xl sm:px-6 lg:px-8 h-fit pb-15 min-h-full">
 	<form class="h-fit justify-between" on:submit|preventDefault={() => handleGenerate()}>
 		{#each Object.keys($currentUserTemplate) as key}
 			<label for="userInput" class="text-2xl mx-1">Your draft</label>
@@ -80,9 +88,6 @@
 				placeholder="Hi Bob, I've looked at the account..."
 			/>
 		{/each}
-		<input type="hidden" name="config" value={JSON.stringify($currentConfig)} />
-		<input type="hidden" name="systemPrompt" value={$currentSystemPrompt} />
-		<input type="hidden" name="userTemplate" value={JSON.stringify($currentUserTemplate)} />
 		<button type="submit" class="btn button-xl w-full my-6 bg-primary text-xl">
 			{#if loading}
 				<span class="loading loading-dots loading-lg" />
@@ -91,8 +96,36 @@
 			{/if}
 		</button>
 		<label for="generatedOutput" class="text-2xl mx-1">Generated Output</label>
-		<div class="w-full text-lg mt-2 mb-10 rounded-lg border border-slate-700/20 min-h-fit">
-			<p class="m-5" style="white-space: pre-line">{output ?? '\n'}</p>
+		<div
+			class="grid grid-flow-col auto-cols-auto w-full mt-2 mb-10 rounded-lg border border-slate-700/20 h-fit"
+		>
+			<p class="my-5 ml-6 text-lg" style="white-space: pre-line" id="output">
+				{output ?? ''}
+			</p>
+			<div class="flex justify-end items-start p-2">
+				<button class={"btn "+ (loading ? "btn-disabled" : "")} type="button" on:click={copyOutput}>
+					Copy
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-7 w-7"
+						fill="black"
+						viewBox="0 0 460 460"
+						stroke="currentColor"
+						stroke-width="10"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M425.934,0H171.662c-18.122,0-32.864,14.743-32.864,32.864v77.134h30V32.864c0-1.579,1.285-2.864,2.864-2.864h254.272 c1.579,0,2.864,1.285,2.864,2.864v254.272c0,1.58-1.285,2.865-2.864,2.865h-74.729v30h74.729 c18.121,0,32.864-14.743,32.864-32.865V32.864C458.797,14.743,444.055,0,425.934,0z"
+						/>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M288.339,139.998H34.068c-18.122,0-32.865,14.743-32.865,32.865v254.272C1.204,445.257,15.946,460,34.068,460h254.272 c18.122,0,32.865-14.743,32.865-32.864V172.863C321.206,154.741,306.461,139.998,288.339,139.998z M288.341,430H34.068 c-1.58,0-2.865-1.285-2.865-2.864V172.863c0-1.58,1.285-2.865,2.865-2.865h254.272c1.58,0,2.865,1.285,2.865,2.865v254.273h0.001 C291.206,428.715,289.92,430,288.341,430z"
+						/>
+					</svg>
+				</button>
+			</div>
 		</div>
 		<div bind:this={scrollToDiv} />
 	</form>

@@ -57,8 +57,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 
 		let body = craftAPICall(requestData);
-		const streamResponse = await openai.chat.completions.create(body).asResponse(); // Returns raw from fetch (default cant be passed as SSE)
-
+		const {data: streamRunner, response: streamResponse} = await openai.chat.completions.create(body).withResponse(); // Returns raw from fetch (default cant be passed as SSE)
+	
 		return new Response(streamResponse.body, {
 			headers: {
 				'Content-Type': 'text/event-stream',
