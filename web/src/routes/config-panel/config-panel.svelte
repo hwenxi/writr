@@ -72,6 +72,10 @@
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
 				<!-- svelte-ignore a11y-missing-attribute -->
+				<li><a on:click={handleModelChange}>gpt-4</a></li>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<!-- svelte-ignore a11y-missing-attribute -->
 				<li><a on:click={handleModelChange}>testing-model</a></li>
 			</ul>
 		</div>
