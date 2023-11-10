@@ -54,7 +54,7 @@
 
 		loading = true;
 
-		const eventSource = new SSE('/api/chat', {
+		const eventSource = new SSE('/api/generate', {
 			headers: {
 				'Content-Type': 'application/json'
 			},
