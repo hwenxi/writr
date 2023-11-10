@@ -146,6 +146,7 @@
 				bind:value={$currentConfig.maxTokens}
 				class="range"
 				name="maxTokens"
+				disabled
 			/>
 		</label>
 		<label

@@ -1,4 +1,4 @@
-import { writable, get, derived } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 export const toolSelection = writable('revisor');
 export const currentConfig = writable();
@@ -38,11 +38,17 @@ export const isSettingsChanged = derived(
 	}
 );
 
-export const updateDefaults = (newConfig, newSystemPrompt, newUserTemplate) => {
+/**
+ * Update the default and current configurations, prompts, and templates.
+ * @param {Object} newConfig - The new configuration object.
+ * @param {string} newSystemPrompt - The new system prompt string.
+ * @param {Object} newUserTemplate - The new user template object.
+ */
+export function updateDefaults(newConfig, newSystemPrompt, newUserTemplate) {
 	currentConfig.set(structuredClone(newConfig));
 	defaultConfig.set(structuredClone(newConfig));
 	currentSystemPrompt.set(structuredClone(newSystemPrompt));
 	defaultSystemPrompt.set(structuredClone(newSystemPrompt));
 	currentUserTemplate.set(structuredClone(newUserTemplate));
 	defaultUserTemplate.set(structuredClone(newUserTemplate));
-};
+}
