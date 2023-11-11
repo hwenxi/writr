@@ -1,13 +1,12 @@
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
+import { OPENAI_KEY } from '$env/static/private';
 import type { RequestHandler } from './$types';
 import { getTokens } from '$lib/utils';
 import { json } from '@sveltejs/kit';
 
-dotenv.config();
 
 const openai = new OpenAI({
-	apiKey: process.env.OPENAI_KEY
+	apiKey: OPENAI_KEY
 });
 
 interface Config {

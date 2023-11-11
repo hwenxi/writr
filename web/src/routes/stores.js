@@ -1,6 +1,7 @@
+import { PUBLIC_DEFAULT_TOOL } from '$env/static/public';
 import { writable, derived } from 'svelte/store';
 
-export const toolSelection = writable('revisor');
+export const toolSelection = writable(PUBLIC_DEFAULT_TOOL);
 export const currentConfig = writable();
 export const defaultConfig = writable();
 export const currentSystemPrompt = writable();
