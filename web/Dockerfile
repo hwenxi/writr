@@ -31,7 +31,8 @@ ENV POCKETBASE_ADMIN_PW=${POCKETBASE_ADMIN_PW}
 ENV WEB_DOMAIN=${WEB_DOMAIN}
 
 RUN npm run build
-
+# After building, node build errors on build/index.js line 1 "Cannot use import statement outside a module". Placing package.json in /build/ fixes: https://www.reddit.com/r/sveltejs/comments/108ayfb/sveltekit_adapternode_deploy/
+COPY --from=deps /app/package.json  /app/build/
 
 # Run prod. image
 FROM base as runner
