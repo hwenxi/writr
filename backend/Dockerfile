@@ -4,11 +4,11 @@ RUN apk add --no-cache ca-certificates unzip
 
 WORKDIR /app
 
-COPY ./pocketbase /app/backend/pocketbase
+COPY ./pocketbase /app/pocketbase
 
 # Set the PocketBase binary as executable
-RUN chmod +x /app/backend/pocketbase
+RUN chmod +x /app/pocketbase
 
 # Port exposed in docker compose
 
-CMD ["./backend/pocketbase", "serve"]
+CMD ["./pocketbase", "serve"]
