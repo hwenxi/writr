@@ -11,4 +11,4 @@ RUN chmod +x /app/pocketbase
 
 # Port exposed in docker compose
 
-CMD ["./pocketbase", "serve"]
+CMD ["./pocketbase", "serve", "--http=0.0.0.0:8090"]
