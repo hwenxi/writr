@@ -3,6 +3,7 @@ OpenAI API wrapper for 1-shot, 1-interaction queries
 
 ## TODO:
 1. Prod configuration - SSL, OAuth (the prod compose file currently does not work)
+2. Database migration - tools collection, users
 
 ## To run
 1. [Install Pocketbase for your architecture](https://pocketbase.io/docs/) in the backend folder
